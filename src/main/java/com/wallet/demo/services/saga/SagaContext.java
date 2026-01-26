@@ -51,5 +51,15 @@ public class SagaContext {
         return null;
     }
 
+    public String getString(String key)
+    {
+        Object value=get(key);
+        if(value instanceof String)
+        {
+            return (String) value;
+        }
+        return null;
+    }
+
 
 }

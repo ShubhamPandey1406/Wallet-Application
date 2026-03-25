@@ -2,6 +2,7 @@ package com.wallet.demo.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.calcite.avatica.SqlType;
@@ -14,6 +15,7 @@ import org.hibernate.type.SqlTypes;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name="saga_instance")
 public class SagaInstance {
 
@@ -29,7 +31,7 @@ public class SagaInstance {
     @Column(name="context" , columnDefinition = "json")
     private String context;
 
-    @Column(name="current_step",nullable = false)
+    @Column(name="current_step")
     private String currentStep;
 
 

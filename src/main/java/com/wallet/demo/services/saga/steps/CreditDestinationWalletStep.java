@@ -5,6 +5,7 @@ import com.wallet.demo.repositories.WalletRepository;
 import com.wallet.demo.services.saga.SagaContext;
 import com.wallet.demo.services.saga.SagaStep;
 import jakarta.transaction.Transactional;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -85,6 +86,6 @@ public class CreditDestinationWalletStep implements SagaStep {
 
     @Override
     public String getStepName() {
-        return "CreditDestinationWalletStep";
+        return SagaStepType.CREDIT_DESTINATION_WALLET_STEP.toString();
     }
 }

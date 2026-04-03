@@ -61,6 +61,14 @@ public class TransactionService {
         return transactionRepository.findBySagaInstanceId(sagaInstanceId);
     }
 
+    public void updateTransactionWithSagaInstanceId(Long transactionId, Long sagaInstanceId){
+        log.info("Updating transaction status for transaction id {}", transactionId);
+        Transaction transaction = getTransactionById(transactionId);
+        transaction.setSagaInstanceId(sagaInstanceId);
+        transactionRepository.save(transaction);
+        log.info("Transaction status updated for transaction id {} to {}", transactionId);
+    }
+
 
 }
 

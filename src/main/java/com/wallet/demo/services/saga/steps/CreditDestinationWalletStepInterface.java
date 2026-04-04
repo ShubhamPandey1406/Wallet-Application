@@ -40,8 +40,7 @@ public class CreditDestinationWalletStepInterface implements SagaStepInterface {
 
         //Step 3: Credit the destination wallet
 
-        wallet.Credit(amount); //by calling this method,only jave object is updated in memory
-        walletRepository.save(wallet);// this will persist the changes to database
+        walletRepository.updateBalanceByUserId(wallet.getUserId(), wallet.getBalance().add(amount));
 
         log.info("Wallet credited successfully with new balance {}", wallet.getBalance());
         context.put("toWalletBalanceAfterCredit", wallet.getBalance());
@@ -72,8 +71,7 @@ public class CreditDestinationWalletStepInterface implements SagaStepInterface {
 
         //Step 3: Credit the destination wallet
 
-        wallet.debit(amount); //by calling this method,only jave object is updated in memory
-        walletRepository.save(wallet);// this will persist the changes to database
+        walletRepository.updateBalanceByUserId(wallet.getUserId(), wallet.getBalance().subtract(amount));
 
         log.info("Wallet credited successfully with new balance {}", wallet.getBalance());
         context.put("toWalletBalanceAfterCreditAfterCreditCompensation", wallet.getBalance());

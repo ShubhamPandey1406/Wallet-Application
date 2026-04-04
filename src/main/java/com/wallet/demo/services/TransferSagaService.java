@@ -23,7 +23,7 @@ public class TransferSagaService {
 
     private final TransactionService transactionService;
 
-    private SagaOrchestrator sagaOrchestrator;
+    private final SagaOrchestrator sagaOrchestrator;
 
 
 

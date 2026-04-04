@@ -2,6 +2,7 @@ package com.wallet.demo.services;
 
 import com.wallet.demo.entities.Transaction;
 import com.wallet.demo.entities.TransactionStatus;
+import com.wallet.demo.entities.TransactionType;
 import com.wallet.demo.repositories.TransactionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,8 @@ public class TransactionService {
                 .toWalletId(toWalletId)
                 .amount(amount)
                 .description(description)
-               // .status(TransactionStatus.PENDING)
+                .status(TransactionStatus.PENDING)
+                .transactionType(TransactionType.TRANSFER)
                 .build();
 
                 Transaction savedTransaction =transactionRepository.save(transaction);

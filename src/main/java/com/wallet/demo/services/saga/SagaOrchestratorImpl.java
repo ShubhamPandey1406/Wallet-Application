@@ -75,7 +75,11 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
            SagaContext sagaContext = objectMapper.readValue(sagaInstance.getContext(), SagaContext.class);
            sagaStepDB.markAsRunning();
            sagaStepRepository.save(sagaStepDB); //updating the status to running in DB
-           boolean success = step.execute(sagaContext);
+           boolean success = executeWithRetry(step, sagaContext);
+
+                   //step.execute(sagaContext);
+
+                   //
 
            if (success) {
                sagaStepDB.markAsCompleted();
@@ -133,7 +137,9 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
             SagaContext sagaContext = objectMapper.readValue(sagaInstance.getContext(), SagaContext.class);
             sagaStepDB.markAsCompensating();  // Mark the step as compensating in DB
             sagaStepRepository.save(sagaStepDB); //updating the status to compensating in DB
-            boolean success = step.compensate(sagaContext);   // calling the compensate method of the step
+            boolean success = compensateWithRetry(step, sagaContext);
+            //step.compensate(sagaContext);
+                    //compensateWithRetry(step, sagaContext);   // calling the compensate method of the step
 
             if (success) {
                 sagaStepDB.markAsCompensated(); //if successful then mark the step compensated
@@ -222,6 +228,52 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
             }
         }
 
+    }
+
+    private  boolean executeWithRetry(SagaStepInterface step, SagaContext context) {
+
+        int maxRetries = 3;
+
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                boolean success = step.execute(context);
+
+                if (success) {
+                    return true;
+                }
+
+            } catch (Exception e) {
+                log.warn("Retry {} failed due to exception", attempt, e);
+            }
+
+            try {
+                Thread.sleep(200 * attempt); // small delay
+            } catch (InterruptedException ignored) {}
+        }
+
+        return false;
+    }
+
+    private boolean compensateWithRetry(SagaStepInterface step, SagaContext context) {
+
+        int maxRetries = 3;
+
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                boolean success = step.compensate(context);
+
+                if (success) return true;
+
+            } catch (Exception e) {
+                log.warn("Compensation retry {} failed", attempt, e);
+            }
+
+            try {
+                Thread.sleep(200 * attempt);
+            } catch (InterruptedException ignored) {}
+        }
+
+        return false;
     }
 
 

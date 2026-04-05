@@ -6,5 +6,6 @@ public interface SagaStepInterface {
 
     boolean compensate(SagaContext context);
 
+
     String getStepName();
 }

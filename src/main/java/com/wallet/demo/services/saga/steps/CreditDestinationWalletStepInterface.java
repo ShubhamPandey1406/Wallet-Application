@@ -4,10 +4,12 @@ import com.wallet.demo.entities.Wallet;
 import com.wallet.demo.repositories.WalletRepository;
 import com.wallet.demo.services.saga.SagaContext;
 import com.wallet.demo.services.saga.SagaStepInterface;
-import jakarta.transaction.Transactional;
+//import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.math.BigDecimal;
 
@@ -18,10 +20,20 @@ public class CreditDestinationWalletStepInterface implements SagaStepInterface {
 
     private final WalletRepository walletRepository;
 
+    private static int counter = 0;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean execute(SagaContext context) {
+
+        //testing retry mechanism by throwing exception for the first 2 attempts
+//        counter++;
+//        if (counter < 3) {
+//            System.out.println("Forcing failure attempt: " + counter);
+//            throw new RuntimeException("Simulated failure");
+//        }
+
+        System.out.println("Success on attempt: " + counter);
         //Step1: Get the destination walllet id from context
 
         Long toWalletId= context.getLong("toWalletId");
@@ -52,7 +64,7 @@ public class CreditDestinationWalletStepInterface implements SagaStepInterface {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean compensate(SagaContext context) {
 
         //Step1: Get the destination walllet id from context

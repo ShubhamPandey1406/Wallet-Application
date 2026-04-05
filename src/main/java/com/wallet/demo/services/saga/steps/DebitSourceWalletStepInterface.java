@@ -4,10 +4,12 @@ import com.wallet.demo.entities.Wallet;
 import com.wallet.demo.repositories.WalletRepository;
 import com.wallet.demo.services.saga.SagaContext;
 import com.wallet.demo.services.saga.SagaStepInterface;
-import jakarta.transaction.Transactional;
+//import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.math.BigDecimal;
 
@@ -19,7 +21,7 @@ public class DebitSourceWalletStepInterface implements SagaStepInterface {
     private final WalletRepository walletRepository;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean execute(SagaContext context) {
         Long fromWalletId = context.getLong("fromWalletId");
         BigDecimal amount = context.getBigDecimal("amount");
@@ -46,7 +48,7 @@ public class DebitSourceWalletStepInterface implements SagaStepInterface {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean compensate(SagaContext context) {
 
         Long fromWalletId = context.getLong("fromWalletId");
